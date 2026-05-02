@@ -1,0 +1,36 @@
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# IntelliJ
+.idea/
+*.iml
+
+# VSCode
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Env / local config
+.env
+application-local.properties
+
+# Java
+*.class
+
+# Node (もし後で使うなら)
+node_modules/
+
+# Temporary
+*.tmp
+*.swp

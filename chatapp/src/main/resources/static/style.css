@@ -1,0 +1,110 @@
+@charset "UTF-8";
+:root {
+    --background-color: #fefefe;
+    --primary-color: #151515;
+    --secondary-color: #f5e82c;
+    --self-text: #141414;
+    --other-text: #e8e8e8;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "ヒラギノ丸ゴ Pro W4", "Hiragino Maru Gothic Pro", sans-serif;
+    font-size: 100%;
+    background: var(--background-color);
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    color: var(--primary-color);
+}
+
+.chat-container {
+    width: 90%;
+    max-width: 480px;
+    height: 95dvh;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    background: var(--background-color);
+    overflow: hidden;
+}
+
+header {
+    padding: 14px;
+    background-color: var(--background-color);
+    color: var(--primary-color);
+    font-size: 2rem;
+    text-align: center;
+    font-weight: bold;
+}
+
+#messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+}
+
+.message {
+    display: flex;
+    margin-bottom: 24px 0;
+}
+
+.message.self {
+    justify-content: flex-end;
+}
+
+.bubble {
+    width: 280px;
+    min-height: 70px;
+    padding: 10px 14px;
+    border-radius: 0;
+    word-break: break-word;
+    font-size: 0.7rem;
+}
+
+.self .bubble {
+    background: var(--background-color);
+    color: var(--primary-color);
+    max-width: 80%;
+    margin: 10px 0;
+    border: 1px solid var(--primary-color);
+}
+
+.other .bubble {
+    background: var(--background-color);
+    color: var(--primary-color);
+    max-width: 80%;
+    margin: 10px 0;
+    border: 1px solid var(--primary-color);
+}
+
+.input-area {
+    display: flex;
+    gap: 8px;
+    padding: 10px;
+    background: var(--background-color);
+}
+
+input {
+    flex: 1;
+    min-width: 0;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 0px;
+    border: 1px var(--primary-color);
+    background: var(--background-color);
+    color: var(--primary-color);
+}
+
+button {
+    background: var(--primary-color);
+    font-size: 1rem;
+    color: var(--other-text);
+    border: none;
+    padding: 12px 14px;
+    border-radius: 18px;
+}
