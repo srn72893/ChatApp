@@ -4,6 +4,8 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.chatapp.entity.Message;
+import java.time.LocalDateTime;
+
 
 public interface ChatRepository extends JpaRepository<Message, Long> {
 
@@ -19,4 +21,11 @@ public interface ChatRepository extends JpaRepository<Message, Long> {
      * @return
      */
     List<Message> findByIdGreaterThanOrderByIdAsc(Long lastId);
+
+    /**
+     * ある程度の日時たったら DB から削除
+     * 18 年前の PC に DB 乗せるので・・・
+     * @param time
+     */
+    void deledeleteByCreatedAtBefore(LocalDateTime time);
 }

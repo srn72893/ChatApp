@@ -25,10 +25,18 @@ public class ChatService {
      */
     public Message save(String username, String content) {
         Message message = new Message();
+        //username, content, time stamp セット
         message.setUsername(username);
         message.setContent(content);
         message.setCreatedAt(LocalDateTime.now());
-        return chatRepository.save(message);
+
+        //DB 保存 + 100 回に 1 回頻度で過去 30 日分のログを消す
+        Message saved = chatRepository.save(message);
+        if (saved.getId() % 100 == 0) {
+            cleanupOldMessages();
+        }
+        
+        return saved;
     }
 
     /**
@@ -49,5 +57,12 @@ public class ChatService {
      */
     public List<Message> getNewMessages(Long lastId) {
         return chatRepository.findByIdGreaterThanOrderByIdAsc(lastId);
+    }
+
+    /**
+     * 古い PC に DB 乗ってるので 30 日おきにログ削除
+     */
+    public void cleanupOldMessages() {
+        chatRepository.deledeleteByCreatedAtBefore(LocalDateTime.now().minusDays(30));
     }
  }

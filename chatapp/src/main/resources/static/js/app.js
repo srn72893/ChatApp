@@ -1,5 +1,5 @@
-let lastId = 0;
 let currentUser = "";
+
 //自分を取得
 async function loadCurrentUser() {
     const res = await fetch('/me');
@@ -35,7 +35,7 @@ function addMessage(m) {
     });
 }
 
-//初期ロード 全件取得
+//過去ログ取得
 async function loadMessages() {
     const res = await fetch('/messages');
     const data = await res.json();
@@ -43,52 +43,48 @@ async function loadMessages() {
     const div = document.getElementById('messages');
     div.innerHTML = '';
 
-    data.forEach(m => {
-        addMessage(m);
-        lastId = m.id;  //最後の ID 更新
+    data.forEach(addMessage);
+}
+
+//WebSocket
+let stompClient = null;
+
+//接続
+function connectWebSocket() {
+    const socket = new SockJS('/chat');
+    stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, function() {
+        stompClient.subscribe('/topic/messages', function(msg) {
+            const data = JSON.parse(msg.body);
+            addMessage(data);
+        });
     });
 }
 
 //送信
-async function sendMessage() {
-    const content = document.getElementById('content').value.trim();
+function sendMessage() {
+    const input = document.getElementById('content');
+    const content = input.value.trim();
 
     if (!content) return;
 
-    await fetch('/messages', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: `content=${encodeURIComponent(content)}`
-    });
+    stompClient.send("/app/chat", {}, JSON.stringify({
+        username: currentUser,
+        content: content
+    }));
 
-    document.getElementById('content').value = '';
-    await loadMessages();
-}
-
-//差分取得
-async function loadNewMessages() {
-    const res = await fetch(`/messages/new?lastId=${lastId}`);
-    const data = await res.json();
-
-    data.forEach(m => {
-        addMessage(m);
-        lastId = m.id;
-    });
+    input.value = "";
 }
 
 //初期化
 async function init() {
     await loadCurrentUser();
     await loadMessages();
+    connectWebSocket();
 }
 
 //イベント登録
 document.getElementById('sendBtn').addEventListener('click', sendMessage);
-document.getElementById('refreshBtn').addEventListener('click', loadMessages);
 //初期化
 init();
-
-//定期更新（3 秒ごと）  重いので本番のみ採用
-// setInterval(loadNewMessages, 3000);
