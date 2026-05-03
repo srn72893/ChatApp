@@ -1,18 +1,20 @@
 package com.example.chatapp.controller;
 
 import com.example.chatapp.entity.Message;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.chatapp.service.ChatService;
+
+import jakarta.servlet.http.HttpSession;
+
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/messages")
+@Controller
 public class ChatController {
     private final ChatService chatService;
 
@@ -21,14 +23,30 @@ public class ChatController {
     }
 
     /**
+     * 未ログインなら login.html リダイレクト
+     * ログイン済なら index.html へ
+     * @param session
+     * @return
+     */
+    @GetMapping("/")
+    public String index(HttpSession session) {
+        if (session.getAttribute("username") == null) {
+            return "redirect:/login.html";
+        }
+        return "forward:/index.html";
+    }
+
+    /**
      * メッセージ送信
      * @param username
      * @param content
      * @return
      */
-    @PostMapping
-    public Message postMessage(@RequestParam String username, @RequestParam String content) {
-        return chatService.save(username, content);
+    @PostMapping("/messages")
+    public void postMessage(
+                @RequestParam String content, HttpSession session) {
+        String username = (String) session.getAttribute("username");
+        chatService.save(username, content);
     }
 
     /**
@@ -36,7 +54,8 @@ public class ChatController {
      * @param listId
      * @return
      */
-    @GetMapping
+    @GetMapping("/messages")
+    @ResponseBody
     public List<Message> getMessage() {
         return chatService.getRecentMessages();
     }
@@ -46,9 +65,15 @@ public class ChatController {
      * @param listId
      * @return
      */
-    @GetMapping("/new")
+    @GetMapping("/messages/new")
+    @ResponseBody
     public List<Message> getNewMessage(@RequestParam Long lastId) {
         return chatService.getNewMessages(lastId);
     }
-    
+
+    @GetMapping("/me")
+    @ResponseBody
+    public String me(HttpSession session) {
+        return (String) session.getAttribute("username");
+    }
 }

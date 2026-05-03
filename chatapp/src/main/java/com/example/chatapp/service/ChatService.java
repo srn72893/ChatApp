@@ -1,5 +1,6 @@
 package com.example.chatapp.service;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class ChatService {
         Message message = new Message();
         message.setUsername(username);
         message.setContent(content);
+        message.setCreatedAt(LocalDateTime.now());
         return chatRepository.save(message);
     }
 
