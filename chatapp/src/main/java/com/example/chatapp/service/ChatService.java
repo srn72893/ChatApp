@@ -25,10 +25,11 @@ public class ChatService {
      */
     public Message save(String username, String content) {
         Message message = new Message();
-        //username, content, time stamp セット
+        //username, content, time stamp, 既読状態 セット
         message.setUsername(username);
         message.setContent(content);
         message.setCreatedAt(LocalDateTime.now());
+        message.setRead(false);
 
         //DB 保存 + 100 回に 1 回頻度で過去 30 日分のログを消す
         Message saved = chatRepository.save(message);
@@ -60,9 +61,23 @@ public class ChatService {
     }
 
     /**
+     * 読み込み時に既読化する
+     */
+    public void markAllAsRead() {
+        //未読ログを取得
+        List<Message> unread = chatRepository.findByReadFalse();
+        //null チェック
+        if (unread.isEmpty()) return;
+        //既読化
+        unread.forEach(m -> m.setRead(true));
+
+        chatRepository.saveAll(unread);
+    }
+
+    /**
      * 古い PC に DB 乗ってるので 30 日おきにログ削除
      */
     public void cleanupOldMessages() {
-        chatRepository.deledeleteByCreatedAtBefore(LocalDateTime.now().minusDays(30));
+        chatRepository.deleteByCreatedAtBefore(LocalDateTime.now().minusDays(30));
     }
  }

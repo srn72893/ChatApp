@@ -14,12 +14,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
+
 @Controller
 public class ChatController {
     private final ChatService chatService;
+    private final ChatWsController chatWsController;
 
-    public ChatController(ChatService chatService) {
+    public ChatController(ChatService chatService, ChatWsController chatWsController) {
         this.chatService = chatService;
+        this.chatWsController = chatWsController;
     }
 
     /**
@@ -71,9 +74,25 @@ public class ChatController {
         return chatService.getNewMessages(lastId);
     }
 
+    /**
+     * ユーザーをセッション保存
+     * @param session
+     * @return
+     */
     @GetMapping("/me")
     @ResponseBody
     public String me(HttpSession session) {
         return (String) session.getAttribute("username");
     }
+
+    /**
+     * 既読つける
+     */
+    @PostMapping("/messages/read")
+    @ResponseBody
+    public void markAsRead() {
+        chatService.markAllAsRead();
+        chatWsController.notifyReadUpdate();
+    }
+    
 }

@@ -23,9 +23,15 @@ public interface ChatRepository extends JpaRepository<Message, Long> {
     List<Message> findByIdGreaterThanOrderByIdAsc(Long lastId);
 
     /**
+     * 未読を取得
+     * @return
+     */
+    List<Message> findByReadFalse();
+
+    /**
      * ある程度の日時たったら DB から削除
      * 18 年前の PC に DB 乗せるので・・・
      * @param time
      */
-    void deledeleteByCreatedAtBefore(LocalDateTime time);
+    void deleteByCreatedAtBefore(LocalDateTime time);
 }

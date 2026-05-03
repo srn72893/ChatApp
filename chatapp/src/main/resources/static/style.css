@@ -178,3 +178,11 @@ button {
     padding: 12px 14px;
     border-radius: 18px;
 }
+
+/* 既読 */
+.read-status {
+    font-size: 0.6rem;
+    text-align: right;
+    margin-top: 4px;
+    opacity: 0.7;
+}

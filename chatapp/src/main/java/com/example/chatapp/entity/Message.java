@@ -33,5 +33,8 @@ public class Message {
     @Column (name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "read_flag")
+    private boolean read = false;
+
     public Message() {}
 }

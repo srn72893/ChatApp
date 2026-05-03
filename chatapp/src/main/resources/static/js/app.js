@@ -18,6 +18,7 @@ function addMessage(m) {
 
     div.insertAdjacentHTML("beforeend", `
         <div class="message ${isSelf ? 'self' : 'other'}">
+            ${isSelf && m.read ? `<span class="read-status">既読</span>` : ""}
             ${isSelf
                 ? `
                     <div class="bubble">${m.content}</div>
@@ -29,7 +30,8 @@ function addMessage(m) {
                 `
             }
         </div>
-        `);
+    `);
+
     requestAnimationFrame(() => {
         div.scrollTop = div.scrollHeight;
     });
