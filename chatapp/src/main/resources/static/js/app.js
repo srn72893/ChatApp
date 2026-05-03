@@ -18,7 +18,7 @@ function addMessage(m) {
 
     div.insertAdjacentHTML("beforeend", `
         <div class="message ${isSelf ? 'self' : 'other'}">
-            ${isSelf && m.read ? `<span class="read-status">既読</span>` : ""}
+            ${isSelf ? `<span class="read-status">${m.read ? "既読" : ""}</span>` : ""}
             ${isSelf
                 ? `
                     <div class="bubble">${m.content}</div>
@@ -48,6 +48,26 @@ async function loadMessages() {
     data.forEach(addMessage);
 }
 
+//既読状態取得
+function updateReadStatus() {
+    document.querySelectorAll('.message.self .read-status')
+        .forEach(el => el.textContent = "既読");
+}
+
+//既読化
+async function markAsRead() {
+    //スマホバックグラウンド判定厳しいのでここでチェック
+    const visible =
+        document.visibilityState === "visible" &&
+        document.hasFocus();
+
+    if (!visible) return;
+
+    await fetch('/messages/read', {
+        method: 'POST'
+    });
+}
+
 //WebSocket
 let stompClient = null;
 
@@ -56,11 +76,20 @@ function connectWebSocket() {
     const socket = new SockJS('/chat');
     stompClient = Stomp.over(socket);
 
-    stompClient.connect({}, function() {
-        stompClient.subscribe('/topic/messages', function(msg) {
+    stompClient.connect({}, async function() {
+        stompClient.subscribe('/topic/messages', async function(msg) {
             const data = JSON.parse(msg.body);
             addMessage(data);
+
+            if (data.username !== currentUser) {
+                await markAsRead();
+            }
         });
+        //既読通知
+        stompClient.subscribe('/topic/read', function() {
+            updateReadStatus();
+        });
+
     });
 }
 
@@ -88,5 +117,14 @@ async function init() {
 
 //イベント登録
 document.getElementById('sendBtn').addEventListener('click', sendMessage);
+
+//バックグラウンドで既読ついてしまう対策
+document.addEventListener("visibilitychange", async () => {
+    if (document.visibilityState === "visible") {
+        await loadMessages();
+        await markAsRead();
+    }
+});
+
 //初期化
 init();
