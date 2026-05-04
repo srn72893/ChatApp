@@ -8,11 +8,10 @@
     </head>
     <body>
         <div class="login-container">
-            <div class="login-box">
-                <input id="username" class="form-input" placeholder="なまえ">
-                <button onclick="login()">ログイン</button>                
-            </div>
+            <form class="login-box" action="/login" method="POST">
+                <input type="text" name="username" class="form-input" placeholder="なまえ">
+                <button type="submit">入る</button>                
+            </form>
         </div>
-        <script src="./js/login.js"></script>
     </body>
 </html>

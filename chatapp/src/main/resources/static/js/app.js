@@ -19,14 +19,21 @@ function addMessage(m) {
     div.insertAdjacentHTML("beforeend", `
         <div class="message ${isSelf ? 'self' : 'other'}">
             ${isSelf ? `<span class="read-status">${m.read ? "既読" : ""}</span>` : ""}
+
             ${isSelf
                 ? `
-                    <div class="bubble">${m.content}</div>
+                    <div class="message-content">
+                        <div class="username">${m.username}</div>
+                        <div class="bubble">${m.content}</div>
+                    </div>
                     <div class="avatar">${getInitial(m.username)}</div>
                 `
                 : `
                     <div class="avatar">${getInitial(m.username)}</div>
-                    <div class="bubble">${m.content}</div>
+                    <div class="message-content">
+                        <div class="username">${m.username}</div>
+                        <div class="bubble">${m.content}</div>
+                    </div>
                 `
             }
         </div>

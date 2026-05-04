@@ -85,6 +85,7 @@ header {
 
 .message.self {
     justify-content: flex-end;
+    align-items: center;
 }
 
 .message.other {
@@ -120,14 +121,16 @@ header {
     border: 1px solid var(--primary-color);
     border-radius: 50%;
 
+    flex-shrink: 0;
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
+    align-self: center;
+    margin: 0 8px;
 
     font-weight: bold;
     font-size: 1rem;
-    margin: 0 8px;
-    flex-shrink: 0;
 }
 
 .input-area {
@@ -182,7 +185,13 @@ button {
 /* 既読 */
 .read-status {
     font-size: 0.6rem;
-    text-align: right;
-    margin-top: 4px;
     opacity: 0.7;
+    line-height: 1;
+    align-self: flex-end;
+    margin-right: 4px;
+}
+
+.username {
+    font-size: 0.6rem;
+    font-weight: bold;
 }
